@@ -17,34 +17,37 @@ struct Constant {
     echo "$(which generamba)"
     """
     
-    static let rambaFileContent = """
-    ### Headers settings
-    company: Sequenia
+    static func rambaFileContent(companyName: String) -> String {
+        
+        return """
+        ### Headers settings
+        company: \(companyName)
 
-    ### Xcode project settings
-    project_name: ProjectTemplate
+        ### Xcode project settings
+        project_name: ProjectTemplate
 
-    ### Code generation settings section
-    # The main project target name
-    project_target: ProjectTemplate
+        ### Code generation settings section
+        # The main project target name
+        project_target: ProjectTemplate
 
-    ### Dependencies settings section
-    podfile_path: Podfile
+        ### Dependencies settings section
+        podfile_path: Podfile
 
-    # The file path for new modules
-    project_file_path: ./
+        # The file path for new modules
+        project_file_path: ./
 
-    catalogs:
-    - 'git@gitlab.sequenia.com:templates/TemplatesIOS.git'
+        catalogs:
+        - 'git@gitlab.sequenia.com:templates/TemplatesIOS.git'
 
-    ### Templates
-    templates:
+        ### Templates
+        templates:
 
-    # App screens
-    - {name: ProjectTemplate}
-    """
+        # App screens
+        - {name: ProjectTemplate}
+        """
+    }
     
-    static let contentGemFile = """
+    static let gemFileContent = """
     source 'https://rubygems.org'
     gem 'generamba', git: 'https://github.com/sequenia/Generamba.git'
     """

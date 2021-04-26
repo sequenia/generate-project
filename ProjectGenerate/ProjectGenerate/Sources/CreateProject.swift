@@ -24,9 +24,20 @@ extension ProjectGenerateCommand {
             let projectName = ask("Enter project name", type: String.self)
             let debugBundleId = ask("Enter project debug bundle id", type: String.self)
             let releaseBundleId = ask("Enter project release bundle id", type: String.self)
-
+            let prefixYouTrack = ask("Enter prefix YouTrack", type: String.self)
+            var teamId = ask("Use default team id or enter id", type: String.self)
+            var companyName = ask("Use company name or enter name", type: String.self)
+            
+            if companyName.isEmpty {
+                companyName = "Sequenia"
+            }
+            
+            if teamId.isEmpty {
+                teamId = "4XJM4GSZPH"
+            }
+            
             print("\nGeneramba install..\n")
-            self.generambaInstall()
+            self.generambaInstall(companyName: companyName)
 
             let tempUserName = ShellCommand.run("/usr/bin/whoami")
             guard let userName = tempUserName?.trimmingCharacters(in: .newlines) else { return }
@@ -38,13 +49,15 @@ extension ProjectGenerateCommand {
                              "ProjectTemplate",
                              "--custom_parameters",
                              "debug_bundle_id:\(debugBundleId)",
-                             "release_bundle_id:\(releaseBundleId)"]
+                             "release_bundle_id:\(releaseBundleId)",
+                             "prefix_youTrack:\(prefixYouTrack)",
+                             "team_id:\(teamId)"]
 
             let outputGeneramba = ShellCommand.run("/Users/\(userName)/.rbenv/shims/bundle", arguments)
             if let out = outputGeneramba { print("\(out)") }
         }
         
-        private func generambaInstall() {
+        private func generambaInstall(companyName: String) {
             let tempUserName = ShellCommand.run("/usr/bin/whoami")
             guard let userName = tempUserName?.trimmingCharacters(in: .newlines) else { return }
             
@@ -53,13 +66,13 @@ extension ProjectGenerateCommand {
             ShellCommand.run("/bin/chmod", ["+x", "Gemfile"])
             
             self.createScriptSh(url: URL(fileURLWithPath: "Gemfile"),
-                                content: Constant.contentGemFile)
+                                content: Constant.gemFileContent)
             
             ShellCommand.run("/Users/\(userName)/.rbenv/shims/bundle", ["install"])
             
             ShellCommand.run("/usr/bin/touch", ["Rambafile"])
             self.createScriptSh(url: URL(fileURLWithPath: "Rambafile"),
-                                content: Constant.rambaFileContent)
+                                content: Constant.rambaFileContent(companyName: companyName))
             
             print("\nTemplate install..\n")
             
