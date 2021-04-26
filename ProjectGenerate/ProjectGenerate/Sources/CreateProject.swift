@@ -18,25 +18,49 @@ extension ProjectGenerateCommand {
             commandName: "gen",
             abstract: "Project generate start..",
             discussion: "discussion")
+
+        private var pathToRuby: String {
+            ShellCommand.run("/usr/bin/env", ["which", "ruby"])?.trimmingCharacters(in: .newlines) ?? ""
+        }
+
+        private var pathToGem: String {
+            ShellCommand.run("/usr/bin/env", ["which", "gem"])?.trimmingCharacters(in: .newlines) ?? ""
+        }
+
+        private var pathToBundler: String {
+            ShellCommand.run("/usr/bin/env", ["which", "bundle"])?.trimmingCharacters(in: .newlines) ?? ""
+        }
         
         func run() throws {
 
+            let defaultTeamId = "4XJM4GSZPH"
+            let defaultTeamName = "Sequenia"
+
             let projectName = ask("Enter project name", type: String.self)
-            let debugBundleId = ask("Enter project debug bundle id", type: String.self)
-            let releaseBundleId = ask("Enter project release bundle id", type: String.self)
+            let bundleId = ask("Enter project bundle id", type: String.self)
+            var debugBundleId = ask("Enter project debug bundle id ('\(bundleId)' by default)", type: String.self)
             let prefixYouTrack = ask("Enter prefix YouTrack", type: String.self)
-            var teamId = ask("Use default team id or enter id", type: String.self)
-            var companyName = ask("Use company name or enter name", type: String.self)
-            
+            var teamId = ask("Enter your team id from Apple Developer Center ('\(defaultTeamId)' by default)", type: String.self)
+            var companyName = ask("Enter your company name name ('\(defaultTeamName)' by default)", type: String.self)
+
+            if debugBundleId.isEmpty {
+                debugBundleId = bundleId
+            }
+
             if companyName.isEmpty {
-                companyName = "Sequenia"
+                companyName = defaultTeamId
             }
             
             if teamId.isEmpty {
-                teamId = "4XJM4GSZPH"
+                teamId = defaultTeamName
             }
             
             print("Generamba install..")
+
+            if let path = ProcessInfo.processInfo.environment["path"] {
+                ShellCommand.run("/usr/bin/env", ["cd", path])
+            }
+
             self.generambaInstall(companyName: companyName)
 
             let tempUserName = ShellCommand.run("/usr/bin/whoami")
@@ -51,7 +75,7 @@ extension ProjectGenerateCommand {
                              "ProjectTemplate",
                              "--custom_parameters",
                              "debug_bundle_id:\(debugBundleId)",
-                             "release_bundle_id:\(releaseBundleId)",
+                             "release_bundle_id:\(bundleId)",
                              "prefix_youTrack:\(prefixYouTrack)",
                              "team_id:\(teamId)"]
 
@@ -62,17 +86,16 @@ extension ProjectGenerateCommand {
         }
         
         private func generambaInstall(companyName: String) {
-            let tempUserName = ShellCommand.run("/usr/bin/whoami")
-            guard let userName = tempUserName?.trimmingCharacters(in: .newlines) else { return }
-            
-            ShellCommand.run("/Users/\(userName)/.rbenv/shims/gem", ["install", "bundler"])
+            ShellCommand.run(self.pathToGem, ["install", "bundler"])
             ShellCommand.run("/usr/bin/touch", ["Gemfile"])
-            ShellCommand.run("/bin/chmod", ["+x", "Gemfile"])
             
             self.createScriptSh(url: URL(fileURLWithPath: "Gemfile"),
                                 content: Constant.gemFileContent)
+
+            self.createScriptSh(url: URL(fileURLWithPath: "Gemfile.lock"),
+                                content: "")
             
-            ShellCommand.run("/Users/\(userName)/.rbenv/shims/bundle", ["install"])
+            print(ShellCommand.run(self.pathToBundler, ["install"]))
             
             ShellCommand.run("/usr/bin/touch", ["Rambafile"])
             self.createScriptSh(url: URL(fileURLWithPath: "Rambafile"),
@@ -80,7 +103,7 @@ extension ProjectGenerateCommand {
             
             print("Template install..")
             
-            let setupGeneramba = ShellCommand.run("/Users/\(userName)/.rbenv/shims/bundle",
+            let setupGeneramba = ShellCommand.run(self.pathToBundler,
                                                   ["exec", "generamba", "template", "install"])
             
             guard let outSetupGeneramba = setupGeneramba else  {

@@ -11,24 +11,24 @@ class ShellCommand {
     
     @discardableResult
     class func run(_ launchPath: String, _ arguments: [String] = []) -> String? {
-      let task = Process()
-      task.executableURL = URL(fileURLWithPath: launchPath)
-      task.arguments = arguments
+        let task = Process()
+        task.executableURL = URL(fileURLWithPath: launchPath)
+        task.arguments = arguments
+        task.waitUntilExit()
         
-      let pipe = Pipe()
-      task.standardOutput = pipe
-      task.standardError = pipe
+        let pipe = Pipe()
+        task.standardOutput = pipe
+        task.standardError = pipe
 
-      do {
-        try task.run()
-      } catch {
-        print("Error: \(error.localizedDescription)")
-      }
+        do {
+            try task.run()
+        } catch {
+            print("Error: \(error.localizedDescription)")
+        }
 
-      let data = pipe.fileHandleForReading.readDataToEndOfFile()
-      let output = String(data: data, encoding: .utf8)
+        let data = pipe.fileHandleForReading.readDataToEndOfFile()
+        let output = String(data: data, encoding: .utf8)
 
-      task.waitUntilExit()
-      return output
+        return output
     }
 }

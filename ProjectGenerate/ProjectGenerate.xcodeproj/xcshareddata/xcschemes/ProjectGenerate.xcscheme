@@ -50,6 +50,13 @@
             ReferencedContainer = "container:ProjectGenerate.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
+      <EnvironmentVariables>
+         <EnvironmentVariable
+            key = "path"
+            value = "/Users/semenkologrivov/Desktop"
+            isEnabled = "YES">
+         </EnvironmentVariable>
+      </EnvironmentVariables>
    </LaunchAction>
    <ProfileAction
       buildConfiguration = "Release"
