@@ -36,12 +36,14 @@ extension ProjectGenerateCommand {
                 teamId = "4XJM4GSZPH"
             }
             
-            print("\nGeneramba install..\n")
+            print("Generamba install..")
             self.generambaInstall(companyName: companyName)
 
             let tempUserName = ShellCommand.run("/usr/bin/whoami")
             guard let userName = tempUserName?.trimmingCharacters(in: .newlines) else { return }
-
+            
+            print("Generate project..")
+            
             let arguments = ["exec",
                              "generamba",
                              "gen",
@@ -55,6 +57,8 @@ extension ProjectGenerateCommand {
 
             let outputGeneramba = ShellCommand.run("/Users/\(userName)/.rbenv/shims/bundle", arguments)
             if let out = outputGeneramba { print("\(out)") }
+            
+            self.removeTempFiles()
         }
         
         private func generambaInstall(companyName: String) {
@@ -74,7 +78,7 @@ extension ProjectGenerateCommand {
             self.createScriptSh(url: URL(fileURLWithPath: "Rambafile"),
                                 content: Constant.rambaFileContent(companyName: companyName))
             
-            print("\nTemplate install..\n")
+            print("Template install..")
             
             let setupGeneramba = ShellCommand.run("/Users/\(userName)/.rbenv/shims/bundle",
                                                   ["exec", "generamba", "template", "install"])
@@ -89,6 +93,14 @@ extension ProjectGenerateCommand {
         private func createScriptSh(url: URL?, content: String) {
             guard let url = url else { return }
             try? content.write(to: url, atomically: true, encoding: .utf8)
+        }
+        
+        private func removeTempFiles() {
+            ShellCommand.run("/bin/rm", ["Gemfile"])
+            ShellCommand.run("/bin/rm", ["Rambafile"])
+            ShellCommand.run("/bin/rm", ["Gemfile.lock"])
+            ShellCommand.run("/bin/rm", ["-rf", "Templates"])
+            
         }
     }
 }
