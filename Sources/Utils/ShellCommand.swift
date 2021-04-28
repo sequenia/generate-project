@@ -7,10 +7,10 @@
 
 import Foundation
 
-class ShellCommand {
+public class ShellCommand {
     
     @discardableResult
-    class func run(_ launchPath: String, _ arguments: [String] = []) -> String? {
+    public class func run(_ launchPath: String, _ arguments: [String] = []) -> String? {
         let task = Process()
         task.executableURL = URL(fileURLWithPath: launchPath)
         task.arguments = arguments

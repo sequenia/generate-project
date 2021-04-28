@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Constant {
+public struct Constant {
     static let templateGenerambaPathScript = """
     #!/bin/bash
 
@@ -17,7 +17,7 @@ struct Constant {
     echo "$(which generamba)"
     """
     
-    static func rambaFileContent(companyName: String) -> String {
+    public static func rambaFileContent(companyName: String) -> String {
         
         return """
         ### Headers settings
@@ -47,7 +47,7 @@ struct Constant {
         """
     }
     
-    static let gemFileContent = """
+    public static let gemFileContent = """
     source 'https://rubygems.org'
     gem 'generamba', git: 'https://github.com/sequenia/Generamba.git'
     """
