@@ -86,16 +86,11 @@ extension ProjectGenerateCommand {
         }
         
         private func generambaInstall(companyName: String) {
-            ShellCommand.run(self.pathToGem, ["install", "bundler"])
+            ShellCommand.run(self.pathToGem, ["install", "bundler", "-S"])
             ShellCommand.run("/usr/bin/touch", ["Gemfile"])
             
             self.createScriptSh(url: URL(fileURLWithPath: "Gemfile"),
                                 content: Constant.gemFileContent)
-
-            self.createScriptSh(url: URL(fileURLWithPath: "Gemfile.lock"),
-                                content: "")
-            
-            print(ShellCommand.run(self.pathToBundler, ["install"]))
             
             ShellCommand.run("/usr/bin/touch", ["Rambafile"])
             self.createScriptSh(url: URL(fileURLWithPath: "Rambafile"),
