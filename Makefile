@@ -1,12 +1,12 @@
 prefix ?= /usr/local
-bindir = $(prefix)/bin/x86_64-apple-macosx
+bindir = $(prefix)/bin/
 
 build:
 	swift package clean
 	swift build -c release --disable-sandbox
 
 uninstall:
-	rm -rf "$(bindir)/project-generate"
+	rm -rf "$(bindir)/projectGenerate"
 
 clean:
 	rm -rf .build
