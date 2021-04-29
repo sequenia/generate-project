@@ -48,7 +48,7 @@ public struct Constant {
     }
     
     public static let gemFileContent = """
-    source 'https://rubygems.org'
-    gem 'generamba', git: 'https://github.com/sequenia/Generamba.git'
+        source 'https://rubygems.org'
+        gem 'generamba', git: 'https://github.com/sequenia/Generamba.git'
     """
 }
