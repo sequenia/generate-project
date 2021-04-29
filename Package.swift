@@ -4,12 +4,12 @@
 import PackageDescription
 
 let package = Package(
-    name: "projectGenerate",
+    name: "project-generate",
     platforms: [
         .macOS(.v10_13),
     ],
     products: [
-        .executable( name: "projectGenerate", targets: ["projectGenerate"]),
+        .executable( name: "project-generate", targets: ["projectGenerate"]),
     ],
     dependencies: [
         .package(url: "https://github.com/apple/swift-argument-parser", from: "0.4.2"),
