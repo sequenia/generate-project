@@ -21,18 +21,6 @@ extension ProjectGenerateCommand {
             commandName: "gen",
             abstract: "Project generate start..",
             discussion: "discussion")
-
-        private var pathToRuby: String {
-            ShellCommand.run("/usr/bin/env", ["which", "ruby"])?.trimmingCharacters(in: .newlines) ?? ""
-        }
-
-        private var pathToGem: String {
-            ShellCommand.run("/usr/bin/env", ["which", "gem"])?.trimmingCharacters(in: .newlines) ?? ""
-        }
-
-        private var pathToBundler: String {
-            ShellCommand.run("/usr/bin/env", ["which", "bundle"])?.trimmingCharacters(in: .newlines) ?? ""
-        }
         
         func run() throws {
 
@@ -59,11 +47,7 @@ extension ProjectGenerateCommand {
             }
             
             print("Generamba install..")
-
-            if let path = ProcessInfo.processInfo.environment["path"] {
-                ShellCommand.run("/usr/bin/env", ["cd", path])
-            }
-
+            
             self.generambaInstall(companyName: companyName)
 
             let tempUserName = ShellCommand.run("/usr/bin/whoami")
@@ -89,11 +73,17 @@ extension ProjectGenerateCommand {
         }
         
         private func generambaInstall(companyName: String) {
-            ShellCommand.run(self.pathToGem, ["install", "bundler", "-S"])
+            let tempUserName = ShellCommand.run("/usr/bin/whoami")
+            guard let userName = tempUserName?.trimmingCharacters(in: .newlines) else { return }
+            
+            ShellCommand.run("/Users/\(userName)/.rbenv/shims/gem", ["install", "bundler"])
             ShellCommand.run("/usr/bin/touch", ["Gemfile"])
+            ShellCommand.run("/bin/chmod", ["+x", "Gemfile"])
             
             self.createScriptSh(url: URL(fileURLWithPath: "Gemfile"),
                                 content: Constant.gemFileContent)
+            
+            ShellCommand.run("/Users/\(userName)/.rbenv/shims/bundle", ["install"])
             
             ShellCommand.run("/usr/bin/touch", ["Rambafile"])
             self.createScriptSh(url: URL(fileURLWithPath: "Rambafile"),
@@ -101,7 +91,7 @@ extension ProjectGenerateCommand {
             
             print("Template install..")
             
-            let setupGeneramba = ShellCommand.run(self.pathToBundler,
+            let setupGeneramba = ShellCommand.run("/Users/\(userName)/.rbenv/shims/bundle",
                                                   ["exec", "generamba", "template", "install"])
             
             guard let outSetupGeneramba = setupGeneramba else  {
@@ -125,4 +115,3 @@ extension ProjectGenerateCommand {
         }
     }
 }
-
