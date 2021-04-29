@@ -6,7 +6,7 @@ build:
 	swift build -c release --disable-sandbox
 
 uninstall:
-	rm -rf "$(bindir)/projectGenerate"
+	rm -rf "$(bindir)/project-generate"
 
 clean:
 	rm -rf .build
