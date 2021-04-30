@@ -69,6 +69,9 @@ extension ProjectGenerateCommand {
             let outputGeneramba = ShellCommand.run("/Users/\(userName)/.rbenv/shims/bundle", arguments)
             if let out = outputGeneramba { print("\(out)") }
             
+//            let outputTuist = ShellCommand.run("/bin/sh", ["./SettingProject.sh"])
+//            if let out = outputTuist { print("\(out)") }
+            
             self.removeTempFiles()
         }
         
@@ -77,6 +80,7 @@ extension ProjectGenerateCommand {
             guard let userName = tempUserName?.trimmingCharacters(in: .newlines) else { return }
             
             ShellCommand.run("/Users/\(userName)/.rbenv/shims/gem", ["install", "bundler"])
+            
             ShellCommand.run("/usr/bin/touch", ["Gemfile"])
             ShellCommand.run("/bin/chmod", ["+x", "Gemfile"])
             
