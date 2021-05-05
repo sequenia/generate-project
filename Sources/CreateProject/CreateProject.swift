@@ -28,22 +28,24 @@ extension ProjectGenerateCommand {
             let defaultTeamName = "Sequenia"
 
             let projectName = ask("Enter project name", type: String.self)
-            let bundleId = ask("Enter project bundle id", type: String.self)
-            var debugBundleId = ask("Enter project debug bundle id ('\(bundleId)' by default)", type: String.self)
-            let prefixYouTrack = ask("Enter prefix YouTrack", type: String.self)
-            var teamId = ask("Enter your team id from Apple Developer Center ('\(defaultTeamId)' by default)", type: String.self)
-            var companyName = ask("Enter your company name name ('\(defaultTeamName)' by default)", type: String.self)
 
+            let bundleId = ask("Enter project bundle id", type: String.self)
+
+            var debugBundleId = ask("Enter project debug bundle id ('\(bundleId)' by default)", type: String.self)
             if debugBundleId.isEmpty {
                 debugBundleId = bundleId
             }
 
-            if companyName.isEmpty {
-                companyName = defaultTeamId
-            }
-            
+            let prefixYouTrack = ask("Enter prefix YouTrack", type: String.self)
+
+            var teamId = ask("Enter your team id from Apple Developer Center ('\(defaultTeamId)' by default)", type: String.self)
             if teamId.isEmpty {
-                teamId = defaultTeamName
+                teamId = defaultTeamId
+            }
+
+            var companyName = ask("Enter your company name name ('\(defaultTeamName)' by default)", type: String.self)
+            if companyName.isEmpty {
+                companyName = defaultTeamName
             }
             
             print("Generamba install..")
@@ -64,13 +66,11 @@ extension ProjectGenerateCommand {
                              "debug_bundle_id:\(debugBundleId)",
                              "release_bundle_id:\(bundleId)",
                              "prefix_youTrack:\(prefixYouTrack)",
-                             "team_id:\(teamId)"]
+                             "team_id:\(teamId)",
+                             "company_name:\(companyName)"]
 
             let outputGeneramba = ShellCommand.run("/Users/\(userName)/.rbenv/shims/bundle", arguments)
             if let out = outputGeneramba { print("\(out)") }
-            
-//            let outputTuist = ShellCommand.run("/bin/sh", ["./SettingProject.sh"])
-//            if let out = outputTuist { print("\(out)") }
             
             self.removeTempFiles()
         }
