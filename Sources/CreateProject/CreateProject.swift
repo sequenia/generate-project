@@ -24,6 +24,9 @@ extension ProjectGenerateCommand {
         
         func run() throws {
 
+            let outputLs = ShellCommand.run("/usr/bin/env", ["ls"])
+            if let out = outputLs { print("\(out)") }
+
             let defaultTeamId = "4XJM4GSZPH"
             let defaultTeamName = "Sequenia"
 
@@ -71,6 +74,12 @@ extension ProjectGenerateCommand {
 
             let outputGeneramba = ShellCommand.run("/Users/\(userName)/.rbenv/shims/bundle", arguments)
             if let out = outputGeneramba { print("\(out)") }
+
+            ShellCommand.run("/bin/chmod", ["-R", "+x", "\(projectName)/Project/RunScripts"])
+
+//            let outputTuist = ShellCommand.run("/bin/sh", ["./SettingProject.sh"])
+//            if let out = outputTuist { print("\(out)") }
+
             
             self.removeTempFiles()
         }
