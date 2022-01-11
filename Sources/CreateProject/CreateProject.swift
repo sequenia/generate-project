@@ -83,7 +83,7 @@ extension ProjectGenerateCommand {
                 "ProjectTemplate",
                 "--custom_parameters",
                 "bundle_id:\(bundleId)",
-                "lang_code:\(defaultLangCode)",
+                "lang_code:\(langCode)",
                 "fastlane_lang_code:\(fastlaneLangCode)",
                 "min_platform_version:\(minPlatformVersion)",
                 "team_id:\(teamId)",
