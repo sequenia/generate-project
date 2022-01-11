@@ -9,7 +9,10 @@ let package = Package(
         .macOS(.v10_13),
     ],
     products: [
-        .executable( name: "project-generate", targets: ["projectGenerate"]),
+        .executable(
+            name: "project-generate",
+            targets: ["projectGenerate"]
+        ),
     ],
     dependencies: [
         .package(url: "https://github.com/apple/swift-argument-parser", from: "0.4.2"),
@@ -26,8 +29,8 @@ let package = Package(
                 .product(name: "Swiftline", package: "Swiftline"),
                 .product(name: "ShellOut", package: "ShellOut")
              ],
-             path: "./Sources/CreateProject"),
-        
+             path: "./Sources/CreateProject"
+        ),
         .target(
             name: "Constant",
             path: "./Sources/Constant"

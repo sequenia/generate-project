@@ -20,26 +20,41 @@ extension ProjectGenerateCommand {
         static let configuration = CommandConfiguration(
             commandName: "gen",
             abstract: "Project generate start..",
-            discussion: "discussion")
+            discussion: "discussion"
+        )
         
         func run() throws {
-
-            let outputLs = ShellCommand.run("/usr/bin/env", ["ls"])
-            if let out = outputLs { print("\(out)") }
-
             let defaultTeamId = "4XJM4GSZPH"
             let defaultTeamName = "Sequenia"
+            let defaultMinPlatformVersion = "14.0"
+            let defaultLangCode = "en"
 
             let projectName = ask("Enter project name", type: String.self)
 
             let bundleId = ask("Enter project bundle id", type: String.self)
 
-            var debugBundleId = ask("Enter project debug bundle id ('\(bundleId)' by default)", type: String.self)
-            if debugBundleId.isEmpty {
-                debugBundleId = bundleId
+            var langCode = ask("Enter language ISO code ('\(defaultLangCode)' by default)", type: String.self)
+            if langCode.isEmpty {
+                langCode = defaultLangCode
+            }
+            var fastlaneLangCode = langCode.replacingOccurrences(of: "_", with: "-")
+            let codesMap = [
+                "en": "en-US",
+                "de": "de-DE",
+                "fr": "fr-FR",
+                "es": "es-ES"
+            ]
+            if let code = codesMap[fastlaneLangCode] {
+                fastlaneLangCode = code
             }
 
-            let prefixYouTrack = ask("Enter prefix YouTrack", type: String.self)
+            var minPlatformVersion = ask("Enter minimum supported iOS version ('\(defaultMinPlatformVersion)' by default)", type: String.self)
+            if minPlatformVersion.isEmpty {
+                minPlatformVersion = defaultMinPlatformVersion
+            }
+            if !minPlatformVersion.contains(".") {
+                minPlatformVersion = "\(minPlatformVersion).0"
+            }
 
             var teamId = ask("Enter your team id from Apple Developer Center ('\(defaultTeamId)' by default)", type: String.self)
             if teamId.isEmpty {
@@ -60,26 +75,25 @@ extension ProjectGenerateCommand {
             
             print("Generate project..")
             
-            let arguments = ["exec",
-                             "generamba",
-                             "gen",
-                             "\(projectName)",
-                             "ProjectTemplate",
-                             "--custom_parameters",
-                             "debug_bundle_id:\(debugBundleId)",
-                             "release_bundle_id:\(bundleId)",
-                             "prefix_youTrack:\(prefixYouTrack)",
-                             "team_id:\(teamId)",
-                             "company_name:\(companyName)"]
+            let arguments = [
+                "exec",
+                "generamba",
+                "gen",
+                "\(projectName)",
+                "ProjectTemplate",
+                "--custom_parameters",
+                "bundle_id:\(bundleId)",
+                "lang_code:\(defaultLangCode)",
+                "fastlane_lang_code:\(fastlaneLangCode)",
+                "min_platform_version:\(minPlatformVersion)",
+                "team_id:\(teamId)",
+                "company_name:\(companyName)"
+            ]
 
             let outputGeneramba = ShellCommand.run("/Users/\(userName)/.rbenv/shims/bundle", arguments)
             if let out = outputGeneramba { print("\(out)") }
 
             ShellCommand.run("/bin/chmod", ["-R", "+x", "\(projectName)/Project/RunScripts"])
-
-//            let outputTuist = ShellCommand.run("/bin/sh", ["./SettingProject.sh"])
-//            if let out = outputTuist { print("\(out)") }
-
             
             self.removeTempFiles()
         }
