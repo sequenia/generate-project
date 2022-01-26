@@ -37,7 +37,7 @@ public struct Constant {
         project_file_path: ./
 
         catalogs:
-        - 'git@gitlab.sequenia.com:ios-development/templates.git'
+        - 'https://gitlab.sequenia.com/ios-development/templates.git'
 
         ### Templates
         templates:
