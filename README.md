@@ -24,6 +24,6 @@
 ## Troubleshooting
 Если в процессе генерации проекта возникнет ошибка вида PermissionDenied, выполните последовательно команды
 ```
-$ sudo chown -R 4{whoami} ~/.rbenv
+$ sudo chown -R ${whoami} ~/.rbenv
 $ sudo chown -R ${whoami} ~/.generamba
 ```
